@@ -522,4 +522,3 @@ After installation and configuration:
 - Official Documentation: https://help.aliyun.com/zh/cli/
 - RAM Console: https://ram.console.aliyun.com/
 - Access Key Management: https://ram.console.aliyun.com/manage/ak
-- Plugin Repository: https://github.com/aliyun/aliyun-cli

@@ -1,6 +1,9 @@
 # Command Syntax Guide
 
-## Basic Command Structure for Product Plugin
+Supplementary reference for the Aliyun CLI plugin system. For core usage instructions,
+see SKILL.md (the primary document).
+
+## Basic Command Structure
 
 ```bash
 aliyun <product> <command> [--parameter value] [--global-flag value]
@@ -11,281 +14,96 @@ aliyun <product> <command> [--parameter value] [--global-flag value]
 - `--parameter`: Command-specific parameters in kebab-case
 - `--global-flag`: Global flags like --region-id, --output, --log-level
 
-## Parameter Types for Product Plugin
+## Parameter Types, Output Filtering, Global Flags, Pagination, Waiters
 
-### 1. Simple String/Number/Boolean
+See SKILL.md §6 (structured parameters), §8 (filter and format output),
+§9 (pagination), §10 (waiters), and the Global Flags Reference table.
 
-```bash
-aliyun ecs describe-instances \
-  --instance-id i-abc123 \
-  --biz-region-id cn-hangzhou \
-  --page-size 50
-```
+### JSON Parameters (supplementary)
 
-### 2. Array of Primitives
+For very complex structures where structured syntax is insufficient, raw JSON is supported:
 
-Multiple values by repeating the parameter:
-```bash
-aliyun ecs describe-instances \
-  --instance-id i-abc123 \
-  --instance-id i-def456 \
-  --instance-id i-ghi789
-```
-
-Or space-separated:
-```bash
-aliyun ecs stop-instances \
-  --instance-ids i-abc123 i-def456 i-ghi789
-```
-
-### 3. Array of Objects
-
-Repeat the parameter with key=value pairs:
-```bash
-aliyun ecs create-instance \
-  --tag key=env value=prod \
-  --tag key=app value=web \
-  --tag key=team value=backend
-```
-
-### 4. Object Parameters
-
-Use key=value pairs:
-```bash
-aliyun ecs create-instance \
-  --data-disk category=cloud_essd size=100 \
-  --data-disk category=cloud_ssd size=200
-```
-
-### 5. JSON Parameters (when needed)
-
-For very complex structures, JSON is still supported:
 ```bash
 aliyun fc create-function \
   --function-name test \
   --code '{"zipFile":"base64encoded..."}'
 ```
 
-## Special Parameter Handling for Product Plugin
+## Multi-Version API Usage
 
-### File Upload
+See SKILL.md §12 for comprehensive multi-version guidance, including version discovery,
+per-command flags, environment variable defaults (`ALIBABA_CLOUD_<PRODUCT_CODE>_API_VERSION`),
+and version-specific command listing.
 
-Use `@` prefix to read from file:
-```bash
-aliyun fc create-function \
-  --function-name test \
-  --code zipFile=@./function.zip
-```
+## Debugging, Plugin Management
 
-### Query/Filter Output
+See SKILL.md §11 (debugging) and §3 (plugin management, including install/update/uninstall).
 
-Use `--cli-query` for JMESPath filtering:
-```bash
-aliyun ecs describe-instances \
-  --biz-region-id cn-hangzhou \
-  --cli-query "Instances.Instance[?Status=='Running'].{ID:InstanceId,Name:InstanceName}"
-```
-
-Use `--output` for format selection:
-```bash
-aliyun ecs describe-instances --output json
-aliyun ecs describe-instances --output yaml
-aliyun ecs describe-instances --output table
-aliyun ecs describe-instances --output cols=InstanceId,InstanceName,Status
-```
-
-## Global Flags for Product Plugin
-
-Available across all commands:
+## Help System
 
 ```bash
---cli-dry-run                 # Enable dry-run mode: print request details without sending the actual API call
---region-id <string>          # Aliyun region
---cli-query <jmespath>        # JMESPath query to filter output
---log-level <string>          # Set log level: DEBUG, INFO, WARN, ERROR (default: ERROR)
---endpoint <url>              # Override service endpoint
---retry <count>               # Retry count for failed requests
---quiet                       # Suppress output (quiet mode)
+aliyun ecs --help                              # Product-level: list all subcommands
+aliyun ecs describe-instances --help           # Command-level: parameters, types, structure
+aliyun ecs --help | grep "Available Commands"  # Quick command listing
 ```
 
-## Multi-Version API Usage for Product Plugin
+When a plugin is installed, `aliyun <product> --help` shows plugin help automatically.
+See SKILL.md §2 for details on `ALIBABA_CLOUD_ORIGINAL_PRODUCT_HELP`.
 
-### Check Available Versions
-
-```bash
-aliyun ess list-api-versions
-```
-
-### Specify Version via Flag
-
-```bash
-aliyun ess describe-scaling-groups \
-  --api-version 2022-02-22 \
-  --biz-region-id cn-hangzhou
-```
-
-### Specify Version via Environment Variable
-
-```bash
-export ALIBABA_CLOUD_ESS_API_VERSION=2022-02-22
-aliyun ess describe-scaling-groups --biz-region-id cn-hangzhou
-```
-
-### Check Help for Specific Version
-
-```bash
-aliyun ess describe-scaling-groups --api-version 2022-02-22 --help
-```
-
-## Debugging Commands for Product Plugin
-
-### Enable Debug Logging
-
-```bash
-aliyun ecs describe-instances \
-  --region-id cn-hangzhou \
-  --log-level debug
-```
-
-### Use Development Log Config
-
-```bash
-# Shows colored output with timestamps
-aliyun fc list-functions --log-level dev
-```
-
-### Set Global Log Config
-
-```bash
-export ALIBABA_CLOUD_CLI_LOG_CONFIG=dev
-aliyun fc list-functions
-```
-
-## Help System for Product Plugin
-
-### Product-Level Help
-
-```bash
-aliyun ecs --help
-```
-
-### Command-Level Help
-
-```bash
-aliyun ecs describe-instances --help
-```
-
-### List All Commands for a Product
-
-```bash
-aliyun ecs --help | grep "Available Commands"
-```
-
-## Plugin Management
-
-### List Installed Plugins
-
-```bash
-aliyun plugin list
-```
-
-### List Available Plugins
-
-```bash
-aliyun plugin list-remote
-```
-
-### Install Plugin
-
-```bash
-aliyun plugin install --names <plugin-name>
-```
-
-### Update Plugin
-
-```bash
-aliyun plugin update <plugin-name>
-```
-
-### Uninstall Plugin
-
-```bash
-aliyun plugin uninstall <plugin-name>
-```
-
-## Common Patterns for Product Plugin
-
-### Pagination
-
-Many list commands support pagination:
-```bash
-aliyun ecs describe-instances \
-  --biz-region-id cn-hangzhou \
-  --page-number 1 \
-  --page-size 50
-```
-
-### Filtering by Tags
-
-```bash
-aliyun ecs describe-instances \
-  --biz-region-id cn-hangzhou \
-  --tag key=env value=prod
-```
-
-### Resource Creation with Tags
-
-```bash
-aliyun ecs create-instance \
-  --biz-region-id cn-hangzhou \
-  --instance-type ecs.g6.large \
-  --image-id ubuntu_20_04_x64 \
-  --tag key=env value=prod \
-  --tag key=owner value=team-a
-```
-
-### Waiting for Resource Status
-
-Some commands support built-in waiters:
-```bash
-aliyun ecs start-instance \
-  --instance-id i-abc123 \
-  --waiter expr='Status' to='running'
-```
-
-## Error Handling for Product Plugin
+## Error Handling
 
 ### Common Error Messages
 
 1. **Plugin not found**
-   ```
+
+   ```text
    Error: plugin 'xxx' not found
    Solution: aliyun plugin install --names xxx
    ```
 
 2. **Missing required parameter**
-   ```
+
+   ```text
    Error: required parameter '--instance-id' not provided
-   Solution: Add the required parameter
+   Solution: Add the required parameter. Check --help for required params.
    ```
 
 3. **Invalid parameter value**
-   ```
+
+   ```text
    Error: invalid value for '--instance-type'
    Solution: Check valid values with --help
    ```
 
 4. **API version not supported**
-   ```
+
+   ```text
    Error: unsupported API version
-   Solution: Check supported versions with 'aliyun <product> list-api-versions'
+   Solution: aliyun <product> list-api-versions
    ```
 
-### Getting More Information
+5. **Authentication error**
 
-Always add `--log-level debug` when troubleshooting:
+   ```text
+   Error: InvalidAccessKeyId.NotFound
+   Solution: aliyun configure set --access-key-id <new-key> --access-key-secret <new-secret>
+   ```
+
+6. **Signature mismatch**
+
+   ```text
+   Error: SignatureDoesNotMatch
+   Solution: Verify access key secret. Check for extra whitespace in credentials.
+   ```
+
+### Debugging failed commands
+
+Always add `--log-level debug` to see the full request/response cycle:
+
 ```bash
 aliyun ecs describe-instances \
   --biz-region-id cn-hangzhou \
   --log-level debug
 ```
+
+This reveals: API endpoint, serialized parameters, HTTP status, and response body.

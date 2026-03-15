@@ -14,7 +14,7 @@ fi
 echo "Checking if plugin '$PLUGIN_NAME' is installed..."
 
 if aliyun plugin list 2>/dev/null | grep -q "aliyun-cli-$PLUGIN_NAME"; then
-    echo "✓ Plugin '$PLUGIN_NAME' is installed"
+    echo "Plugin '$PLUGIN_NAME' is installed"
 
     # Show plugin version
     VERSION=$(aliyun plugin list 2>/dev/null | grep "aliyun-cli-$PLUGIN_NAME" | awk '{print $2}')
@@ -22,7 +22,7 @@ if aliyun plugin list 2>/dev/null | grep -q "aliyun-cli-$PLUGIN_NAME"; then
 
     exit 0
 else
-    echo "✗ Plugin '$PLUGIN_NAME' is NOT installed"
+    echo "Plugin '$PLUGIN_NAME' is NOT installed"
     echo ""
     echo "To install, run:"
     echo "  aliyun plugin install --names $PLUGIN_NAME"

@@ -32,14 +32,8 @@ If the user hasn't installed or configured the CLI, guide them through setup.
 See `./references/installation-guide.md` for full details. Quick path:
 
 ```bash
-# Install (macOS)
-brew update
-brew upgrade
-brew install aliyun-cli
-
-# Install (Linux)
-wget -qO- https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar xz
-sudo mv aliyun /usr/local/bin/
+# Install or update (macOS / Linux — one command)
+/bin/bash -c "$(curl -fsSL https://aliyuncli.alicdn.com/setup.sh)"
 ```
 
 ```bash

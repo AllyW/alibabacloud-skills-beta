@@ -6,68 +6,40 @@ Complete guide for installing and configuring Aliyun CLI.
 
 ## Installation
 
-### macOS
+### macOS / Linux (Recommended)
 
-**Using Homebrew (Recommended)**
+One command to install or update — works on both macOS and Linux, auto-detects architecture:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://aliyuncli.alicdn.com/setup.sh)"
+```
+
+After installation, verify:
+```bash
+aliyun version   # should be >= 3.3.0
+```
+
+### macOS — Homebrew (Alternative)
+
 ```bash
 brew install aliyun-cli
 # Upgrade to latest
 brew upgrade aliyun-cli
-
-# Verify version (>= 3.3.0)
-aliyun version
 ```
 
-**Using Binary**
+### Linux — Manual Binary (Alternative)
+
+Use these only if the setup script above is not suitable.
+
+**x86_64**
 ```bash
-# Download
-wget https://aliyuncli.alicdn.com/aliyun-cli-macosx-latest-amd64.tgz
-
-# Extract
-tar -xzf aliyun-cli-macosx-latest-amd64.tgz
-
-# Move to PATH
+wget -qO- https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz | tar xz
 sudo mv aliyun /usr/local/bin/
-
-# Verify
-aliyun version
 ```
 
-### Linux
-
-**Debian/Ubuntu**
+**ARM64**
 ```bash
-# Download
-wget https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz
-
-# Extract and install
-tar -xzf aliyun-cli-linux-latest-amd64.tgz
-sudo mv aliyun /usr/local/bin/
-
-# Verify
-aliyun version
-```
-
-**CentOS/RHEL**
-```bash
-# Download
-wget https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz
-
-# Extract and install
-tar -xzf aliyun-cli-linux-latest-amd64.tgz
-sudo mv aliyun /usr/local/bin/
-
-# Verify
-aliyun version
-```
-
-**ARM64 Architecture**
-```bash
-# Download ARM64 version
-wget https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-arm64.tgz
-
-# Extract and install
-tar -xzf aliyun-cli-linux-latest-arm64.tgz
+wget -qO- https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-arm64.tgz | tar xz
 sudo mv aliyun /usr/local/bin/
 ```
 
@@ -284,7 +256,7 @@ aliyun ecs describe-instances   # Uses projectA
 
 ```bash
 aliyun configure list                      # List all profiles
-aliyun configure set --current projectA    # Switch default profile
+aliyun configure switch --profile projectA    # Switch default profile
 ```
 
 ### Credential Priority
@@ -338,7 +310,7 @@ aliyun ecs describe-regions
 aliyun configure get
 
 # Test with debug logging
-aliyun ecs describe-regions --log-level=debug
+aliyun ecs describe-regions --log-level debug
 
 # Check credential provider
 aliyun configure get mode
@@ -425,7 +397,7 @@ echo $PATH
 aliyun configure get
 
 # Test with debug
-aliyun ecs describe-regions --log-level=debug
+aliyun ecs describe-regions --log-level debug
 
 # Check credentials in console
 # Verify access key is active
@@ -461,28 +433,10 @@ aliyun configure set --mode StsToken \
 aliyun ecs describe-regions
 
 # Update default region
-aliyun configure set region cn-shanghai
+aliyun configure set --region cn-shanghai
 ```
 
 ## Advanced Configuration
-
-### Custom Endpoint
-
-```bash
-# Use custom or private endpoint
-export ALIBABA_CLOUD_ECS_ENDPOINT=ecs-vpc.cn-hangzhou.aliyuncs.com
-```
-
-### Proxy Settings
-
-```bash
-# HTTP proxy
-export HTTP_PROXY=http://proxy.example.com:8080
-export HTTPS_PROXY=http://proxy.example.com:8080
-
-# No proxy for specific domains
-export NO_PROXY=localhost,127.0.0.1,.aliyuncs.com
-```
 
 ### Timeout Settings
 

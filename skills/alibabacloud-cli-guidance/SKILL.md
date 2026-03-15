@@ -50,18 +50,24 @@ aliyun <product> <subcommand> --help   # Get exact parameter names, types, struc
 Help output is the authoritative source. Plugin help is especially rich — it includes type
 info, structure fields, format hints, and constraints for every parameter.
 
-### 3. Check and install service plugins
+### 3. Ensure service plugins are available
 
 Each Alibaba Cloud product has a CLI plugin. Plugins provide consistent kebab-case commands
 with comprehensive help, while the legacy built-in system has inconsistent naming and minimal
-help. Check what's available:
+help. If you know which product to use, install the plugin directly — `plugin install` is
+idempotent (safe to run even if already installed):
+
+```bash
+aliyun plugin install --names ecs     # Install (short name, case-insensitive)
+aliyun plugin install --names ECS VPC RDS   # Multiple at once
+```
+
+To discover or verify plugins:
 
 ```bash
 aliyun plugin list                    # Installed plugins
 aliyun plugin list-remote             # All available plugins
 aliyun plugin search <keyword>        # Search by keyword
-aliyun plugin install --names ecs     # Install (short name, case-insensitive)
-aliyun plugin install --names ECS VPC RDS   # Multiple at once
 ```
 
 Plugin names accept both short form (`ecs`) and full form (`aliyun-cli-ecs`), case-insensitive.

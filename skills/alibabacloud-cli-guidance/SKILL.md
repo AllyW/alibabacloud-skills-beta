@@ -38,11 +38,7 @@ See `./references/installation-guide.md` for full details. Quick path:
 
 ```bash
 # Configure with Access Key (most common)
-aliyun configure set \
-  --mode AK \
-  --access-key-id <your-key-id> \
-  --access-key-secret <your-key-secret> \
-  --region cn-hangzhou
+aliyun configure set --mode AK --access-key-id <your-key-id> --access-key-secret <your-key-secret> --region cn-hangzhou
 
 # Verify
 aliyun version      # Should be >= 3.3.0
@@ -76,10 +72,8 @@ export ALIBABA_CLOUD_REGION_ID=cn-hangzhou
 Manage multiple accounts/environments with profiles:
 
 ```bash
-aliyun configure set --profile prod \
-  --mode AK --access-key-id ... --access-key-secret ... --region cn-hangzhou
-aliyun configure set --profile staging \
-  --mode AK --access-key-id ... --access-key-secret ... --region cn-shanghai
+aliyun configure set --profile prod --mode AK --access-key-id ... --access-key-secret ... --region cn-hangzhou
+aliyun configure set --profile staging --mode AK --access-key-id ... --access-key-secret ... --region cn-shanghai
 
 aliyun ecs describe-instances --profile prod          # Use specific profile
 aliyun configure switch --profile prod                # Switch default
@@ -269,13 +263,11 @@ aliyun ecs describe-instances \
   --pager path='Instances.Instance[]' PageNumber=PageNumber PageSize=PageSize
 ```
 
-`--all-pages` is an alias for `--pager`. The `path` argument specifies which JSON field
-contains the page data to merge.
+The `path` argument specifies which JSON field contains the page data to merge.
 
 ### 10. Wait for resource state
 
-Some commands support built-in waiters for automation — poll until a resource reaches the
-desired state:
+Some commands support built-in waiters for automation — poll until a resource reaches the desired state:
 
 ```bash
 aliyun vpc describe-vpc-attribute \
@@ -286,8 +278,7 @@ aliyun vpc describe-vpc-attribute \
 
 ### 11. Debugging
 
-When troubleshooting command failures, these flags reveal what's happening under the hood —
-the full HTTP request/response and parameter validation details:
+When troubleshooting command failures, these flags reveal what's happening under the hood — the full HTTP request/response and parameter validation details:
 
 - `--log-level debug` — detailed request/response logs (shows endpoint, serialized params, response)
 - `--cli-dry-run` — validate command without executing (checks parameter parsing)
@@ -394,10 +385,13 @@ aliyun ecs create-instance \
 ```bash
 # Plugin expands ROA body fields into individual params (no --body JSON needed)
 aliyun fc create-function \
-  --function-name my-function \
+  --function-name image-processor \
   --runtime python3.9 \
   --handler index.handler \
-  --memory-size 512
+  --memory-size 512 \
+  --timeout 60 \
+  --description "Process uploaded images" \
+  --environment-variables OSS_BUCKET=my-bucket REGION=cn-hangzhou
 ```
 
 ### Multi-Version API (ESS)
